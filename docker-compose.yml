@@ -1,25 +1,51 @@
-version : '3'
+version: '3'
 
 services:
-    lb:
-        image: haproxy
-        ports:
-            - "8083:8080"
-        volumes:
-            - ./haproxy:/usr/local/etc/haproxy
-    notificationservice1:
-        image: notificationservice
-        environment:
-            - APPID=1111
-    notificationservice2:
-        image: notificationservice
-        environment:
-            - APPID=2222
-    notificationservice3:
-        image: notificationservice
-        environment:
-            - APPID=3333
-    notificationservice4:
-        image: notificationservice
-        environment:
-            - APPID=4444
+  lb:
+    image: haproxy
+    ports:
+      - "8083:8080"
+    networks:
+      marketplace:
+        ipv4_address: 172.21.0.2 # Assign a static IP address to the lb service
+    volumes:
+      - ./haproxy:/usr/local/etc/haproxy
+
+  notificationservice1:
+    image: notificationservice
+    environment:
+      - APPID=1111
+    networks:
+      marketplace:
+        ipv4_address: 172.21.0.3 # Assign a static IP address to notificationservice1
+
+  notificationservice2:
+    image: notificationservice
+    environment:
+      - APPID=2222
+    networks:
+      marketplace:
+        ipv4_address: 172.21.0.4 # Assign a static IP address to notificationservice2
+
+  notificationservice3:
+    image: notificationservice
+    environment:
+      - APPID=3333
+    networks:
+      marketplace:
+        ipv4_address: 172.21.0.5 # Assign a static IP address to notificationservice3
+
+  notificationservice4:
+    image: notificationservice
+    environment:
+      - APPID=4444
+    networks:
+      marketplace:
+        ipv4_address: 172.21.0.6 # Assign a static IP address to notificationservice4
+
+networks:
+  marketplace:
+    ipam:
+      driver: default
+      config:
+        - subnet: 172.21.0.0/16 # Define a subnet for your custom network named "marketplace"
